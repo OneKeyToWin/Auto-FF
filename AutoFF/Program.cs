@@ -10,12 +10,12 @@ namespace AutoFF
     {
         static Menu Menu;
         
-        private static Timer TimeOut;
+        private static Timer TimeOutFF;
         private static void Main(string[] args)
         {
-            TimeOut = new System.Timers.Timer(180000);
-            TimeOut.Enabled = false;
-            TimeOut.Elapsed += OnTimedEvent;
+            TimeOutFF = new System.Timers.Timer(180000);
+            TimeOutFF.Enabled = false;
+            TimeOutFF.Elapsed += OnTimedEvent;
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
         }
 
@@ -35,12 +35,17 @@ namespace AutoFF
 
         static void OnGameUpdate(EventArgs arg)
         {
-            if (Menu.Item("FF20").IsActive() && LeagueSharp.Game.ClockTime > 1200 && TimeOut.Enabled == false)
+            if (TimeOutFF.Enabled == true)
+            {
+                return;
+            }
+
+            if (Menu.Item("FF20").IsActive() && LeagueSharp.Game.ClockTime > 1200)
             {
                 LeagueSharp.Game.Say("/ff");
             }
 
-            if (Loosing() && LeagueSharp.Game.ClockTime > 1200 && TimeOut.Enabled == false)
+            if (Loosing() && LeagueSharp.Game.ClockTime > 1200)
             {
                 LeagueSharp.Game.Say("/ff");
             }
@@ -50,7 +55,7 @@ namespace AutoFF
         {
             if (string.Equals(args.EventId.ToString(), "OnSurrenderFailedVotes") || args.EventId == GameEventId.OnSurrenderFailedVotes)
             {
-                TimeOut.Enabled = true;
+                TimeOutFF.Enabled = true;
             }
             
             if (string.Equals(args.EventId.ToString(), "OnSurrenderVote") || args.EventId == GameEventId.OnSurrenderVote)
@@ -69,7 +74,7 @@ namespace AutoFF
 
         private static void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            TimeOut.Enabled = false;
+            TimeOutFF.Enabled = false;
         }
         private static bool Loosing()
         {
